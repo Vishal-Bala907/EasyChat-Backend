@@ -1,0 +1,81 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      - DB_VENDOR=mysql
+      - DB_ADDR=db
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=keycloak_password
+      - KC_BOOTSTRAP_ADMIN_USERNAME=vishalbala
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=1234QWER
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always
+    command: ["start-dev", "--spi-db-schema=auto"]
+    volumes:
+      - keycloak_data:/opt/keycloak/data  # <-- Persist Keycloak data here
+
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=keycloak
+      - MYSQL_PASSWORD=keycloak_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:
+  keycloak_data:  # <-- Define a volume for Keycloak data
+
+
+
+#services:
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:latest
+#    environment:
+#      - DB_VENDOR=POSTGRES
+#      - DB_ADDR=db
+#      - DB_DATABASE=keycloak
+#      - DB_USER=keycloak
+#      - DB_PASSWORD=keycloak_password
+#      - KC_BOOTSTRAP_ADMIN_USERNAME=vishalbala
+#      - KC_BOOTSTRAP_ADMIN_PASSWORD=1234QWER
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+#    restart: always
+#    command: ["start-dev", "--spi-db-schema=update"]  # Required for new Keycloak versions
+#
+#  db:
+#    image: postgres:latest
+#    environment:
+#      - POSTGRES_DB=keycloak
+#      - POSTGRES_USER=keycloak
+#      - POSTGRES_PASSWORD=keycloak_password
+#    ports:
+#    - "5432:5432" 
+#    volumes:
+#      - db_data:/var/lib/postgresql/data
+#    restart: always
+#    
+##  pgadmin:
+##    image: dpage/pgadmin4
+##    environment:
+##      PGADMIN_DEFAULT_EMAIL: vishal.bala.100@gamil.com
+##      PGADMIN_DEFAULT_PASSWORD: 1234QWER
+##    ports:
+##      - "5050:80"
+##    depends_on:
+##      - db
+#
+#volumes:
+#  db_data:
